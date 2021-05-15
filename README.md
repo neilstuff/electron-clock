@@ -22,10 +22,8 @@ cd electron-clock
 # Install dependencies
 npm install
 # Package Windows
-npm run package-win
-# Build Installer
-npm run create-installer-win
-# Run the app
+npm run dist
+# To Start Application
 npm start
 ```
 
