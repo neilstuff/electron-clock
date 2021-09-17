@@ -1,8 +1,7 @@
 'use strict';
 
 const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
+const { app, ipcMain, protocol, BrowserWindow } = require('electron');
 
 const path = require('path')
 const url = require('url')
@@ -19,10 +18,13 @@ function createWindow() {
         transparent: true,
         alwaysOnTop: true,
         autoHideMenuBar: true,
-
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: false,
+            contextIsolation: true,
+            enableRemoteModule: false,
+            preload: path.join(__dirname, "preload.js")
         }
+
     });
 
     mainWindow.setMenu(null);
@@ -48,4 +50,10 @@ app.on('activate', () => {
     if (mainWindow === null) {
         createWindow()
     }
+})
+
+ipcMain.on('quit', function(event, arg) {
+
+    app.quit();
+
 })
