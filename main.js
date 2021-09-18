@@ -13,7 +13,11 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 110,
         height: 110,
-        resizable: false,
+        minWidth: 110,
+        minHeight: 110,
+        maxWidth: 110,
+        maxHeight: 110,
+        resizable: true,
         frame: false,
         transparent: true,
         alwaysOnTop: true,
@@ -38,6 +42,7 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
+
 }
 
 app.on('ready', createWindow)
