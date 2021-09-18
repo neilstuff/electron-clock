@@ -16,8 +16,6 @@
         height: 17px;
         width: 17px;
         font-weight: bold;
-        -moz-border-radius: 50%;
-        -webkit-border-radius: 50%;
         z-index: 99;
     }
     
@@ -27,6 +25,28 @@
         font-weight: bold;
         text-decoration: none;
         cursor: pointer;
+        border: 2px solid #c8c8c8;
+    }
+    
+    .resize {
+        color: #696969;
+        float: right;
+        font-size: 10px;
+        height: 17px;
+        width: 17px;
+        font-weight: bold;
+        border: 2px solid #696969;
+        border-radius: 50%;
+        z-index: 99;
+    }
+    
+    .resize:hover,
+    .resize:focus {
+        color: #c8c8c8;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        border: 2px solid #c8c8c8;
     }
     
     .canvas {
@@ -44,13 +64,18 @@
     }
 </style>
 
-<body>
+<body style="overflow: hidden;">
 
     <div style="overflow: hidden;">
-        <div class="close" style="position:absolute; right:0px; top:0px;" onclick="window.api.quit();">
+        <div class="close" style="position:absolute; right:12px; top:8px;" onclick="window.api.quit();">
             <div style="margin-left:4px; margin-top: 0px; ">&times;</div>
         </div>
-        <div style="position:absolute; top:20px; left:0px; width:85px; height:85px; -webkit-app-region: drag; z-index: 100;">
+
+        <div class="resize" style="position:absolute; left:10px; top:6px;" onclick="resize();">
+            <div id="resize-text" style="margin-left:3px; margin-top: 2px; ">&#9698;</div>
+        </div>
+
+        <div id="clock" style="position:absolute; top:20px; left:10px; width:85px; height:85px; -webkit-app-region: drag; z-index: 100;">
             <canvas id="canvas" class="canvas" width="80" height="80" style="border: solid white 2px;">
             </canvas>
         </div>
@@ -62,21 +87,66 @@
     document.addEventListener("drop", event => event.preventDefault());
 
     var canvas = document.getElementById("canvas");
+    var clock = document.getElementById("clock");
+    var close = document.getElementById("close");
+    var resizeText = document.getElementById("resize-text");
 
-    console.log(canvas);
-
-    var ctx = canvas.getContext("2d");
+    var context = canvas.getContext("2d");
     var radius = canvas.height / 2;
 
-    ctx.translate(radius, radius);
-    radius = radius * 0.90
+    context.translate(radius, radius);
+    radius = radius * 0.90;
+
+    var size = 2;
 
     setInterval(drawClock, 1000);
 
+    function resize() {
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+        if (size == 2) {
+
+            canvas.width = 40;
+            canvas.height = 40;
+
+            clock.style.left = "32px";
+
+            var radius = 20;
+
+            context.translate(radius, radius);
+            radius = radius * 0.90;
+            drawClock();
+
+            size = 1;
+
+            resizeText.innerHTML = "&#9700;";
+
+        } else {
+            canvas.width = 80;
+            canvas.height = 80;
+
+            clock.style.left = "10px";
+
+            var radius = 40;
+
+            context.translate(radius, radius);
+
+            radius = radius * 0.90;
+            drawClock();
+
+            size = 2;
+
+            resizeText.innerHTML = "&#9698;";
+        }
+
+    }
+
     function drawClock() {
-        drawFace(ctx, radius);
-        drawNumbers(ctx, radius);
-        drawTime(ctx, radius);
+        drawFace(context, radius);
+        drawNumbers(context, radius);
+        drawTime(context, radius);
     }
 
     function drawFace(ctx, radius) {
